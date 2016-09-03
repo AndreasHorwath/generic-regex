@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GenericRegex
 {
-    class StartAnchor<T> : PatternExpr<T>
+    class StartAnchor<T> : ExpressionBase<T>
     {
         public static StartAnchor<T> Instance { get; } = new StartAnchor<T>();
 

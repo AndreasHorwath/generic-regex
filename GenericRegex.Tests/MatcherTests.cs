@@ -61,7 +61,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherSeqMatchWithCapturingGroups()
         {
-            var result = Seq('a', 'b').As(1).Match("cabs");
+            var result = Seq('a', 'b').WithId(1).Match("cabs");
 
             result.Success.ShouldBe(true);
             result.Groups.Count.ShouldBe(1);
@@ -75,7 +75,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherSeqMatchAllWithCapturingGroups()
         {
-            var results = Seq('a', 'b').As(1).MatchAll("cabsab").ToList();
+            var results = Seq('a', 'b').WithId(1).FindMatchesIn("cabsab").ToList();
 
             results.Count.ShouldBe(2);
 
@@ -129,7 +129,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherZeroOrManyNonGreedy1()
         {
-            var pattern = Seq('a', ZeroOrManyNonGreedy('b').As(1), 'c');
+            var pattern = Seq('a', ZeroOrManyNonGreedy('b').WithId(1), 'c');
 
             pattern.Match("abbc").CharGroup(1).ShouldBe("bb");
             pattern.Match("abb").CharGroup(1).ShouldBe(null);
@@ -138,7 +138,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherZeroOrManyNonGreedy2a()
         {
-            var pattern = Seq('a', ZeroOrManyNonGreedy(AnyElement).As(1), 'c').As(0);
+            var pattern = Seq('a', ZeroOrManyNonGreedy(AnyElement).WithId(1), 'c').WithId(0);
 
             pattern.Match("abbcbbbbc").CharGroup(1).ShouldBe("bb");
             pattern.Match("abbcbbbbc").CharGroup(0).ShouldBe("abbc");
@@ -147,7 +147,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherZeroOrManyNonGreedy2b()
         {
-            var pattern = Seq('a', ZeroOrManyNonGreedy(AnyElement).As(1), 'c', 'c');
+            var pattern = Seq('a', ZeroOrManyNonGreedy(AnyElement).WithId(1), 'c', 'c');
 
             pattern.Match("abbcbbbbc").CharGroup(1).ShouldBe(null);
             pattern.Match("abbcbbbbcc").CharGroup(1).ShouldBe("bbcbbbb");
@@ -156,7 +156,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherZeroOrManyGreedy2()
         {
-            var pattern = Seq('a', ZeroOrMany(AnyElement).As(1), 'c').As(0);
+            var pattern = Seq('a', ZeroOrMany(AnyElement).WithId(1), 'c').WithId(0);
 
             pattern.Match("abbcbbbbc").CharGroup(1).ShouldBe("bbcbbbb");
             pattern.Match("abbcbbbbc").CharGroup(0).ShouldBe("abbcbbbbc");
@@ -165,7 +165,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherRepeat1()
         {
-            var pattern = Seq(Repeat('x', 1, 5).As(1), Repeat('x', 2, 5).As(2)).As(0);
+            var pattern = Seq(Repeat('x', 1, 5).WithId(1), Repeat('x', 2, 5).WithId(2)).WithId(0);
             var match = pattern.Match("axxxxxb");
 
             match.CharGroup(0).ShouldBe("xxxxx");
@@ -178,7 +178,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherRepeat1a()
         {
-            var pattern = Seq(Repeat(Seq('x', 'y'), 1, 5).As(1), Repeat(Seq('x', 'y'), 2, 5).As(2)).As(0);
+            var pattern = Seq(Repeat(Seq('x', 'y'), 1, 5).WithId(1), Repeat(Seq('x', 'y'), 2, 5).WithId(2)).WithId(0);
             var match = pattern.Match("axyxyxyxyxyb");
 
             match.CharGroup(0).ShouldBe("xyxyxyxyxy");
@@ -189,7 +189,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherRepeat2()
         {
-            var pattern = Seq(RepeatNonGreedy('x', 1, 5).As(1), Repeat('x', 2, 5).As(2)).As(0);
+            var pattern = Seq(RepeatNonGreedy('x', 1, 5).WithId(1), Repeat('x', 2, 5).WithId(2)).WithId(0);
             var match = pattern.Match("axxxxxb");
 
             match.CharGroup(0).ShouldBe("xxxxx");
@@ -200,7 +200,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherRepeat2a()
         {
-            var pattern = Seq(RepeatNonGreedy(Seq('x', 'y'), 1, 5).As(1), Repeat(Seq('x', 'y'), 2, 5).As(2)).As(0);
+            var pattern = Seq(RepeatNonGreedy(Seq('x', 'y'), 1, 5).WithId(1), Repeat(Seq('x', 'y'), 2, 5).WithId(2)).WithId(0);
             var match = pattern.Match("axyxyxyxyxyb");
 
             match.CharGroup(0).ShouldBe("xyxyxyxyxy");
@@ -211,7 +211,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherRepeat3()
         {
-            var pattern = Seq(RepeatNonGreedy('x', 1, 5).As(1), RepeatNonGreedy('x', 2, 5).As(2)).As(0);
+            var pattern = Seq(RepeatNonGreedy('x', 1, 5).WithId(1), RepeatNonGreedy('x', 2, 5).WithId(2)).WithId(0);
             var match = pattern.Match("axxxxxb");
 
             match.CharGroup(0).ShouldBe("xxx");
@@ -222,7 +222,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherRepeat4()
         {
-            var pattern = Seq(RepeatNonGreedy('x', 1, 5).As(1), RepeatNonGreedy('x', 2, 5).As(2), 'b').As(0);
+            var pattern = Seq(RepeatNonGreedy('x', 1, 5).WithId(1), RepeatNonGreedy('x', 2, 5).WithId(2), 'b').WithId(0);
             var match = pattern.Match("axxxxxb");
 
             match.CharGroup(0).ShouldBe("xxxxxb");
@@ -233,7 +233,7 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherRepeat5()
         {
-            var pattern = Seq(RepeatNonGreedy('x', 1, 5).As(1), RepeatNonGreedy('x', 2, 3).As(2), 'b').As(0);
+            var pattern = Seq(RepeatNonGreedy('x', 1, 5).WithId(1), RepeatNonGreedy('x', 2, 3).WithId(2), 'b').WithId(0);
             var match = pattern.Match("axxxxxb");
             match.CharGroup(0).ShouldBe("xxxxxb");
             match.CharGroup(1).ShouldBe("xx");
@@ -243,8 +243,8 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherOr()
         {
-            Seq('c', Or(OneOrMany('a'), OneOrMany('b')).As(1), OneOrMany('b')).Match("caaabbb").CharGroup(1).ShouldBe("aaa");
-            Seq('c', Or(OneOrMany('a'), OneOrMany('b')).As(1), OneOrMany('a')).Match("cbbaaa").CharGroup(1).ShouldBe("bb");
+            Seq('c', Or(OneOrMany('a'), OneOrMany('b')).WithId(1), OneOrMany('b')).Match("caaabbb").CharGroup(1).ShouldBe("aaa");
+            Seq('c', Or(OneOrMany('a'), OneOrMany('b')).WithId(1), OneOrMany('a')).Match("cbbaaa").CharGroup(1).ShouldBe("bb");
 
             // regexp: (A.*?A|A.*A)C
             // pattern: AxxAxxAC
@@ -255,7 +255,7 @@ namespace GenericRegex.Tests
                     Seq('A', OneOrMany(AnyElement), 'A')
                 ),
                 'C'
-            ).As(1).Match("AxxAxxAC").CharGroup(1).ShouldBe("AxxAxxAC");
+            ).WithId(1).Match("AxxAxxAC").CharGroup(1).ShouldBe("AxxAxxAC");
 
             Seq(
                 Or(
@@ -263,7 +263,7 @@ namespace GenericRegex.Tests
                     Seq('A', OneOrManyNonGreedy(AnyElement), 'A')
                 ),
                 'C'
-            ).As(1).Match("AxxAxxAC").CharGroup(1).ShouldBe("AxxAxxAC");
+            ).WithId(1).Match("AxxAxxAC").CharGroup(1).ShouldBe("AxxAxxAC");
 
             Seq(
                 Or(
@@ -271,11 +271,11 @@ namespace GenericRegex.Tests
                     Seq('A', OneOrManyNonGreedy(AnyElement), 'B')
                 ),
                 'C'
-            ).As(1).Match("AxxAxxAC").CharGroup(1).ShouldBeNull();
+            ).WithId(1).Match("AxxAxxAC").CharGroup(1).ShouldBeNull();
         }
     }
 
-    static class TextExtensions
+    static class TextExtensions // TODO remove this class
     {
         public static string CharGroup(this MatchResult<char> matchResult, int groupId)
         {

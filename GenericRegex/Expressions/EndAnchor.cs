@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GenericRegex
 {
-    class EndAnchor<T> : PatternExpr<T>
+    class EndAnchor<T> : ExpressionBase<T>
     {
         public static EndAnchor<T> Instance { get; } = new EndAnchor<T>();
 
@@ -15,7 +15,8 @@ namespace GenericRegex
 
         internal override IEnumerable<MatchContext<T>> Match(MatchContext<T> context)
         {
-            if (context.Index == context.InputSequence.Count)
+            //if (context.Index == context.InputSequence.Count)
+            if (context.IsEndOfSequence)
             {
                 yield return context;
             }

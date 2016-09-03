@@ -8,87 +8,87 @@ namespace GenericRegex
 {
     public static class Matcher<T>
     {
-        public static PatternExpr<T> Seq(params PatternExpr<T>[] expressions)
+        public static ExpressionBase<T> Seq(params ExpressionBase<T>[] expressions)
         {
-            return Seq((IEnumerable<PatternExpr<T>>)expressions);
+            return Seq((IEnumerable<ExpressionBase<T>>)expressions);
         }
 
-        public static PatternExpr<T> Seq(IEnumerable<PatternExpr<T>> expressions)
+        public static ExpressionBase<T> Seq(IEnumerable<ExpressionBase<T>> expressions)
         {
-            return new SeqExpr<T>(expressions);
+            return new SeqExpression<T>(expressions);
         }
 
-        public static PatternExpr<T> Or(params PatternExpr<T>[] expressions)
+        public static ExpressionBase<T> Or(params ExpressionBase<T>[] expressions)
         {
-            return Or((IEnumerable<PatternExpr<T>>)expressions);
+            return Or((IEnumerable<ExpressionBase<T>>)expressions);
         }
 
-        public static PatternExpr<T> Or(IEnumerable<PatternExpr<T>> expressions)
+        public static ExpressionBase<T> Or(IEnumerable<ExpressionBase<T>> expressions)
         {
-            return new OrExpr<T>(expressions);
+            return new OrExpression<T>(expressions);
         }
 
-        public static PatternExpr<T> AnyElement
+        public static ExpressionBase<T> AnyElement
         {
             get { return AnyElement<T>.Instance; }
         }
 
-        public static PatternExpr<T> Val(T value)
+        public static ExpressionBase<T> Val(T value)
         {
-            return new EqualsPatternExpr<T>(value);
+            return new ValExpression<T>(value);
         }
 
-        public static PatternExpr<T> Pred(Func<T, bool> predicate)
+        public static ExpressionBase<T> Pred(Func<T, bool> predicate)
         {
-            return new PredPatternExpr<T>(predicate);
+            return new PredExpression<T>(predicate);
         }
 
-        public static PatternExpr<T> ZeroOrOne(PatternExpr<T> expression)
+        public static ExpressionBase<T> ZeroOrOne(ExpressionBase<T> expression)
         {
             return Repeat(expression, 0, 1);
         }
 
-        public static PatternExpr<T> ZeroOrMany(PatternExpr<T> expression)
+        public static ExpressionBase<T> ZeroOrMany(ExpressionBase<T> expression)
         {
             return Repeat(expression, 0, int.MaxValue);
         }
 
-        public static PatternExpr<T> OneOrMany(PatternExpr<T> expression)
+        public static ExpressionBase<T> OneOrMany(ExpressionBase<T> expression)
         {
             return Repeat(expression, 1, int.MaxValue);
         }
 
-        public static PatternExpr<T> Repeat(PatternExpr<T> expression, int minOccur, int maxOccur = int.MaxValue, bool greedy = true)
+        public static ExpressionBase<T> Repeat(ExpressionBase<T> expression, int minOccur, int maxOccur = int.MaxValue)
         {
-            return new RepetitionExpr<T>(expression, minOccur, maxOccur, greedy);
+            return new RepetitionExpr<T>(expression, minOccur, maxOccur, true);
         }
 
-        public static PatternExpr<T> ZeroOrOneNonGreedy(PatternExpr<T> expression)
+        public static ExpressionBase<T> ZeroOrOneNonGreedy(ExpressionBase<T> expression)
         {
             return RepeatNonGreedy(expression, 0, 1);
         }
 
-        public static PatternExpr<T> ZeroOrManyNonGreedy(PatternExpr<T> expression)
+        public static ExpressionBase<T> ZeroOrManyNonGreedy(ExpressionBase<T> expression)
         {
             return RepeatNonGreedy(expression, 0, int.MaxValue);
         }
 
-        public static PatternExpr<T> OneOrManyNonGreedy(PatternExpr<T> expression)
+        public static ExpressionBase<T> OneOrManyNonGreedy(ExpressionBase<T> expression)
         {
             return RepeatNonGreedy(expression, 1, int.MaxValue);
         }
 
-        public static PatternExpr<T> RepeatNonGreedy(PatternExpr<T> expression, int minOccur, int maxOccur = int.MaxValue)
+        public static ExpressionBase<T> RepeatNonGreedy(ExpressionBase<T> expression, int minOccur, int maxOccur = int.MaxValue)
         {
             return new RepetitionExpr<T>(expression, minOccur, maxOccur, false);
         }
 
-        public static PatternExpr<T> StartAnchor
+        public static ExpressionBase<T> StartAnchor
         {
             get { return StartAnchor<T>.Instance; }
         }
 
-        public static PatternExpr<T> EndAnchor
+        public static ExpressionBase<T> EndAnchor
         {
             get { return EndAnchor<T>.Instance; }
         }

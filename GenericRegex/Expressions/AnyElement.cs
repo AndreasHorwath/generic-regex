@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GenericRegex
 {
-    class AnyElement<T> : PatternExpr<T>
+    class AnyElement<T> : ExpressionBase<T>
     {
         public static AnyElement<T> Instance { get; } = new AnyElement<T>();
 

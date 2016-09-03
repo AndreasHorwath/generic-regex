@@ -8,11 +8,11 @@ namespace GenericRegex
 {
     class MatchContext<T>
     {
-        public IReadOnlyList<T> InputSequence { get; }
+        public IndexedSequence<T> InputSequence { get; }
         public int Index { get; }
         public ImmutableDictionary<int, MatchReference> MatchReferences { get; }
 
-        public MatchContext(IReadOnlyList<T> inputSequence)
+        public MatchContext(IndexedSequence<T> inputSequence)
         {
             InputSequence = inputSequence;
             MatchReferences = ImmutableDictionary<int, MatchReference>.Empty;
@@ -35,9 +35,10 @@ namespace GenericRegex
         public MatchContext<T> WithIndex(int index) => new MatchContext<T>(this, index);
         public MatchContext<T> WithGroupId(int id, MatchReference matchReference) => new MatchContext<T>(this, id, matchReference);
 
-        public bool IsEndOfSequence => Index >= InputSequence.Count;
+        public bool IsEndOfSequence => !InputSequence.ReadElementsThroughIndex(Index);
+
         public T CurrentItem => InputSequence[Index];
 
-        public override string ToString() => $"Index = {Index}, InputSequence = {string.Join(", ", InputSequence.ToArray())}";
+        public override string ToString() => $"Index = {Index}, InputSequence = {string.Join(", ", InputSequence.CurrentList)}";
     }
 }

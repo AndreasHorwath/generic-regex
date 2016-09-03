@@ -16,7 +16,7 @@ namespace GenericRegex
                 groups = context.MatchReferences.ToDictionary(e => e.Key, e =>
                 {
                     MatchReference mr = e.Value;
-                    return new Match<T>(mr.StartIndex, mr.Length, context.InputSequence.Skip(mr.StartIndex).Take(mr.Length).ToList());
+                    return new Match<T>(mr.StartIndex, mr.Length, context.InputSequence.CurrentList.Skip(mr.StartIndex).Take(mr.Length).ToList());
                 });
             }
             else
