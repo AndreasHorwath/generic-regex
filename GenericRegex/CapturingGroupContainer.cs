@@ -11,26 +11,19 @@ namespace GenericRegex
 
         internal CapturingGroupContainer(MatchContext<T> context)
         {
-            if (context != null)
+            groups = context.MatchReferences.ToDictionary(e => e.Key, e =>
             {
-                groups = context.MatchReferences.ToDictionary(e => e.Key, e =>
-                {
-                    MatchReference mr = e.Value;
-                    return new Match<T>(mr.StartIndex, mr.Length, context.InputSequence.CurrentList.Skip(mr.StartIndex).Take(mr.Length).ToList());
-                });
-            }
-            else
-            {
-                groups = new Dictionary<int, Match<T>>();
-            }
+                MatchReference mr = e.Value;
+                return new Match<T>(mr.StartIndex, mr.Length, context.GetSubsequence(mr.StartIndex, mr.Length));
+            });
         }
 
-        public Match<T> this[int groupId]
+        public Match<T> this[int expressionId]
         {
             get
             {
                 Match<T> match;
-                groups.TryGetValue(groupId, out match);
+                groups.TryGetValue(expressionId, out match);
                 return match;
             }
         }

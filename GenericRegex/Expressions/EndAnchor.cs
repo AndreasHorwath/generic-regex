@@ -15,7 +15,6 @@ namespace GenericRegex
 
         internal override IEnumerable<MatchContext<T>> Match(MatchContext<T> context)
         {
-            //if (context.Index == context.InputSequence.Count)
             if (context.IsEndOfSequence)
             {
                 yield return context;

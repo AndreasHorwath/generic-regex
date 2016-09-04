@@ -7,12 +7,19 @@ namespace GenericRegex
 {
     public class MatchResult<T>
     {
-        public bool Success { get; }
+        public int StartIndex { get; }
+        public int EndIndex => context.Index;
+        public int Length => EndIndex - StartIndex;
+        public IReadOnlyList<T> Elements { get; }
         public CapturingGroupContainer<T> Groups { get; }
 
-        internal MatchResult(MatchContext<T> context)
+        readonly MatchContext<T> context;
+
+        internal MatchResult(MatchContext<T> context, int startIndex)
         {
-            Success = context != null;
+            this.context = context;
+            StartIndex = startIndex;
+            Elements = context.GetSubsequence(StartIndex, Length).ToList();
             Groups = new CapturingGroupContainer<T>(context);
         }
     }

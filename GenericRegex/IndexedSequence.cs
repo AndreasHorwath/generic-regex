@@ -12,13 +12,42 @@ namespace GenericRegex
             enumerator = sequence.GetEnumerator();
         }
 
-        IEnumerator<T> enumerator;
+        readonly IEnumerator<T> enumerator;
         readonly List<T> list = new List<T>();
         bool isEndOfSequence;
 
         public IReadOnlyList<T> CurrentList => list;
 
-        public bool ReadElementsThroughIndex(int index)
+        public bool TryGetElementAt(int index, out T element)
+        {
+            if (ReadElementsThroughIndex(index))
+            {
+                element = list[index];
+                return true;
+            }
+
+            element = default(T);
+            return false;
+        }
+
+        public IEnumerable<T> GetSubsequence(int startIndex, int length)
+        {
+            int endIndex = startIndex + length;
+            for (int index = startIndex; index < endIndex; index++)
+            {
+                T element;
+                if (TryGetElementAt(index, out element))
+                {
+                    yield return element;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        bool ReadElementsThroughIndex(int index)
         {
             if (isEndOfSequence)
             {
@@ -39,17 +68,17 @@ namespace GenericRegex
             return true;
         }
 
-        public T this[int index]
-        {
-            get
-            {
-                if (!ReadElementsThroughIndex(index))
-                {
-                    throw new InvalidOperationException($"IsEndOfSequence: index = {index} > {list.Count}");
-                }
+        //public T this[int index]
+        //{
+        //    get
+        //    {
+        //        if (!ReadElementsThroughIndex(index))
+        //        {
+        //            throw new InvalidOperationException($"IsEndOfSequence: index = {index} > {list.Count}");
+        //        }
 
-                return list[index];
-            }
-        }
+        //        return list[index];
+        //    }
+        //}
     }
 }

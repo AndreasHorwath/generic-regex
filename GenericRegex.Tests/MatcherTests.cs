@@ -13,9 +13,12 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherSeqMatch()
         {
-            var result = Seq('a', 'b').Match("cabs");
+            var result = Seq('a', 'b').FindMatchesIn("cabs").FirstOrDefault();
 
-            result.Success.ShouldBe(true);
+            result.ShouldNotBeNull();
+            result.StartIndex.ShouldBe(1);
+            result.Length.ShouldBe(2);
+            result.Elements.ShouldBe("ab".ToArray());
             result.Groups.Count.ShouldBe(0);
             result.Groups[0].ShouldBeNull();
             result.Groups[1].ShouldBeNull();
@@ -24,46 +27,39 @@ namespace GenericRegex.Tests
         [Fact]
         public void MatcherSeqMatchWithAnchor1()
         {
-            var result = Seq(StartAnchor, 'a', 'b').Match("cabs");
-            result.Success.ShouldBe(false);
+            Seq(StartAnchor, 'a', 'b').FindMatchesIn("cabs").ShouldBeEmpty();
         }
 
         [Fact]
         public void MatcherSeqMatchWithAnchor2()
         {
-            var result = Seq(StartAnchor, 'c', 'a').Match("cabs");
-            result.Success.ShouldBe(true);
+            Seq(StartAnchor, 'c', 'a').FindMatchesIn("cabs").ShouldNotBeEmpty();
         }
 
         [Fact]
         public void MatcherSeqMatchWithAnchor3()
         {
-            var result = Seq(StartAnchor, 'c', 'a', EndAnchor).Match("ca");
-            result.Success.ShouldBe(true);
+            Seq(StartAnchor, 'c', 'a', EndAnchor).FindMatchesIn("ca").ShouldNotBeEmpty();
         }
 
         [Fact]
         public void MatcherSeqMatchWithAnchor4()
         {
-            var result = Seq('c', 'a', EndAnchor).Match("cab");
-            result.Success.ShouldBe(false);
+            Seq('c', 'a', EndAnchor).FindMatchesIn("cab").ShouldBeEmpty();
         }
 
         [Fact]
         public void MatcherSeqNoMatch()
         {
-            var pattern = Seq('a', 'b');
-            var result = pattern.Match("caas");
-
-            result.Success.ShouldBe(false);
+            Seq('a', 'b').FindMatchesIn("caas").ShouldBeEmpty();
         }
 
         [Fact]
         public void MatcherSeqMatchWithCapturingGroups()
         {
-            var result = Seq('a', 'b').WithId(1).Match("cabs");
+            var result = Seq('a', 'b').WithId(1).FindMatchesIn("cabs").FirstOrDefault();
 
-            result.Success.ShouldBe(true);
+            result.ShouldNotBeNull();
             result.Groups.Count.ShouldBe(1);
             result.Groups[1].StartIndex.ShouldBe(1);
             result.Groups[1].Length.ShouldBe(2);
@@ -79,7 +75,6 @@ namespace GenericRegex.Tests
 
             results.Count.ShouldBe(2);
 
-            results[0].Success.ShouldBe(true);
             results[0].Groups.Count.ShouldBe(1);
             results[0].Groups[1].StartIndex.ShouldBe(1);
             results[0].Groups[1].Length.ShouldBe(2);
@@ -87,7 +82,6 @@ namespace GenericRegex.Tests
             results[0].Groups[1].Elements[0].ShouldBe('a');
             results[0].Groups[1].Elements[1].ShouldBe('b');
 
-            results[1].Success.ShouldBe(true);
             results[1].Groups.Count.ShouldBe(1);
             results[1].Groups[1].StartIndex.ShouldBe(4);
             results[1].Groups[1].Length.ShouldBe(2);
@@ -101,9 +95,9 @@ namespace GenericRegex.Tests
         {
             var pattern = Seq('a', ZeroOrOne('b'), 'c');
 
-            pattern.Match("ac").Success.ShouldBe(true);
-            pattern.Match("abc").Success.ShouldBe(true);
-            pattern.Match("abbc").Success.ShouldBe(false);
+            pattern.FindMatchesIn("ac").ShouldNotBeEmpty();
+            pattern.FindMatchesIn("abc").ShouldNotBeEmpty();
+            pattern.FindMatchesIn("abbc").ShouldBeEmpty();
         }
 
         [Fact]
@@ -111,9 +105,9 @@ namespace GenericRegex.Tests
         {
             var pattern = Seq('a', ZeroOrMany('b'), 'c');
 
-            pattern.Match("ac").Success.ShouldBe(true);
-            pattern.Match("abc").Success.ShouldBe(true);
-            pattern.Match("abbc").Success.ShouldBe(true);
+            pattern.FindMatchesIn("ac").ShouldNotBeEmpty();
+            pattern.FindMatchesIn("abc").ShouldNotBeEmpty();
+            pattern.FindMatchesIn("abbc").ShouldNotBeEmpty();
         }
 
         [Fact]
@@ -121,9 +115,9 @@ namespace GenericRegex.Tests
         {
             var pattern = Seq('a', OneOrMany('b'), 'c');
 
-            pattern.Match("ac").Success.ShouldBe(false);
-            pattern.Match("abc").Success.ShouldBe(true);
-            pattern.Match("abbc").Success.ShouldBe(true);
+            pattern.FindMatchesIn("ac").ShouldBeEmpty();
+            pattern.FindMatchesIn("abc").ShouldNotBeEmpty();
+            pattern.FindMatchesIn("abbc").ShouldNotBeEmpty();
         }
 
         [Fact]
@@ -131,8 +125,8 @@ namespace GenericRegex.Tests
         {
             var pattern = Seq('a', ZeroOrManyNonGreedy('b').WithId(1), 'c');
 
-            pattern.Match("abbc").CharGroup(1).ShouldBe("bb");
-            pattern.Match("abb").CharGroup(1).ShouldBe(null);
+            pattern.FindMatchesIn("abbc").First().Groups[1].Elements.ShouldBe("bb".ToArray());
+            pattern.FindMatchesIn("abb").ShouldBeEmpty();
         }
 
         [Fact]
@@ -140,8 +134,8 @@ namespace GenericRegex.Tests
         {
             var pattern = Seq('a', ZeroOrManyNonGreedy(AnyElement).WithId(1), 'c').WithId(0);
 
-            pattern.Match("abbcbbbbc").CharGroup(1).ShouldBe("bb");
-            pattern.Match("abbcbbbbc").CharGroup(0).ShouldBe("abbc");
+            pattern.FindMatchesIn("abbcbbbbc").First().Groups[1].Elements.ShouldBe("bb".ToArray());
+            pattern.FindMatchesIn("abbcbbbbc").First().Groups[0].Elements.ShouldBe("abbc".ToArray());
         }
 
         [Fact]
@@ -149,8 +143,8 @@ namespace GenericRegex.Tests
         {
             var pattern = Seq('a', ZeroOrManyNonGreedy(AnyElement).WithId(1), 'c', 'c');
 
-            pattern.Match("abbcbbbbc").CharGroup(1).ShouldBe(null);
-            pattern.Match("abbcbbbbcc").CharGroup(1).ShouldBe("bbcbbbb");
+            pattern.FindMatchesIn("abbcbbbbc").ShouldBeEmpty();
+            pattern.FindMatchesIn("abbcbbbbcc").First().Groups[1].Elements.ShouldBe("bbcbbbb".ToArray());
         }
 
         [Fact]
@@ -158,19 +152,19 @@ namespace GenericRegex.Tests
         {
             var pattern = Seq('a', ZeroOrMany(AnyElement).WithId(1), 'c').WithId(0);
 
-            pattern.Match("abbcbbbbc").CharGroup(1).ShouldBe("bbcbbbb");
-            pattern.Match("abbcbbbbc").CharGroup(0).ShouldBe("abbcbbbbc");
+            pattern.FindMatchesIn("abbcbbbbc").First().Groups[1].Elements.ShouldBe("bbcbbbb".ToArray());
+            pattern.FindMatchesIn("abbcbbbbc").First().Groups[0].Elements.ShouldBe("abbcbbbbc".ToArray());
         }
 
         [Fact]
         public void MatcherRepeat1()
         {
             var pattern = Seq(Repeat('x', 1, 5).WithId(1), Repeat('x', 2, 5).WithId(2)).WithId(0);
-            var match = pattern.Match("axxxxxb");
+            var match = pattern.FindMatchesIn("axxxxxb").First();
 
-            match.CharGroup(0).ShouldBe("xxxxx");
-            match.CharGroup(1).ShouldBe("xxx");
-            match.CharGroup(2).ShouldBe("xx");
+            match.Groups[0].Elements.ShouldBe("xxxxx".ToArray());
+            match.Groups[1].Elements.ShouldBe("xxx".ToArray());
+            match.Groups[2].Elements.ShouldBe("xx".ToArray());
             match.Groups[2].StartIndex.ShouldBe(4);
             match.Groups[2].Length.ShouldBe(2);
         }
@@ -179,72 +173,72 @@ namespace GenericRegex.Tests
         public void MatcherRepeat1a()
         {
             var pattern = Seq(Repeat(Seq('x', 'y'), 1, 5).WithId(1), Repeat(Seq('x', 'y'), 2, 5).WithId(2)).WithId(0);
-            var match = pattern.Match("axyxyxyxyxyb");
+            var match = pattern.FindMatchesIn("axyxyxyxyxyb").First();
 
-            match.CharGroup(0).ShouldBe("xyxyxyxyxy");
-            match.CharGroup(1).ShouldBe("xyxyxy");
-            match.CharGroup(2).ShouldBe("xyxy");
+            match.Groups[0].Elements.ShouldBe("xyxyxyxyxy".ToArray());
+            match.Groups[1].Elements.ShouldBe("xyxyxy".ToArray());
+            match.Groups[2].Elements.ShouldBe("xyxy".ToArray());
         }
 
         [Fact]
         public void MatcherRepeat2()
         {
             var pattern = Seq(RepeatNonGreedy('x', 1, 5).WithId(1), Repeat('x', 2, 5).WithId(2)).WithId(0);
-            var match = pattern.Match("axxxxxb");
+            var match = pattern.FindMatchesIn("axxxxxb").First();
 
-            match.CharGroup(0).ShouldBe("xxxxx");
-            match.CharGroup(1).ShouldBe("x");
-            match.CharGroup(2).ShouldBe("xxxx");
+            match.Groups[0].Elements.ShouldBe("xxxxx".ToArray());
+            match.Groups[1].Elements.ShouldBe("x".ToArray());
+            match.Groups[2].Elements.ShouldBe("xxxx".ToArray());
         }
 
         [Fact]
         public void MatcherRepeat2a()
         {
             var pattern = Seq(RepeatNonGreedy(Seq('x', 'y'), 1, 5).WithId(1), Repeat(Seq('x', 'y'), 2, 5).WithId(2)).WithId(0);
-            var match = pattern.Match("axyxyxyxyxyb");
+            var match = pattern.FindMatchesIn("axyxyxyxyxyb").First();
 
-            match.CharGroup(0).ShouldBe("xyxyxyxyxy");
-            match.CharGroup(1).ShouldBe("xy");
-            match.CharGroup(2).ShouldBe("xyxyxyxy");
+            match.Groups[0].Elements.ShouldBe("xyxyxyxyxy".ToArray());
+            match.Groups[1].Elements.ShouldBe("xy".ToArray());
+            match.Groups[2].Elements.ShouldBe("xyxyxyxy".ToArray());
         }
 
         [Fact]
         public void MatcherRepeat3()
         {
             var pattern = Seq(RepeatNonGreedy('x', 1, 5).WithId(1), RepeatNonGreedy('x', 2, 5).WithId(2)).WithId(0);
-            var match = pattern.Match("axxxxxb");
+            var match = pattern.FindMatchesIn("axxxxxb").First();
 
-            match.CharGroup(0).ShouldBe("xxx");
-            match.CharGroup(1).ShouldBe("x");
-            match.CharGroup(2).ShouldBe("xx");
+            match.Groups[0].Elements.ShouldBe("xxx".ToArray());
+            match.Groups[1].Elements.ShouldBe("x".ToArray());
+            match.Groups[2].Elements.ShouldBe("xx".ToArray());
         }
 
         [Fact]
         public void MatcherRepeat4()
         {
             var pattern = Seq(RepeatNonGreedy('x', 1, 5).WithId(1), RepeatNonGreedy('x', 2, 5).WithId(2), 'b').WithId(0);
-            var match = pattern.Match("axxxxxb");
+            var match = pattern.FindMatchesIn("axxxxxb").First();
 
-            match.CharGroup(0).ShouldBe("xxxxxb");
-            match.CharGroup(1).ShouldBe("x");
-            match.CharGroup(2).ShouldBe("xxxx");
+            match.Groups[0].Elements.ShouldBe("xxxxxb".ToArray());
+            match.Groups[1].Elements.ShouldBe("x".ToArray());
+            match.Groups[2].Elements.ShouldBe("xxxx".ToArray());
         }
 
         [Fact]
         public void MatcherRepeat5()
         {
             var pattern = Seq(RepeatNonGreedy('x', 1, 5).WithId(1), RepeatNonGreedy('x', 2, 3).WithId(2), 'b').WithId(0);
-            var match = pattern.Match("axxxxxb");
-            match.CharGroup(0).ShouldBe("xxxxxb");
-            match.CharGroup(1).ShouldBe("xx");
-            match.CharGroup(2).ShouldBe("xxx");
+            var match = pattern.FindMatchesIn("axxxxxb").First();
+            match.Groups[0].Elements.ShouldBe("xxxxxb".ToArray());
+            match.Groups[1].Elements.ShouldBe("xx".ToArray());
+            match.Groups[2].Elements.ShouldBe("xxx".ToArray());
         }
 
         [Fact]
         public void MatcherOr()
         {
-            Seq('c', Or(OneOrMany('a'), OneOrMany('b')).WithId(1), OneOrMany('b')).Match("caaabbb").CharGroup(1).ShouldBe("aaa");
-            Seq('c', Or(OneOrMany('a'), OneOrMany('b')).WithId(1), OneOrMany('a')).Match("cbbaaa").CharGroup(1).ShouldBe("bb");
+            Seq('c', Or(OneOrMany('a'), OneOrMany('b')).WithId(1), OneOrMany('b')).FindMatchesIn("caaabbb").First().Groups[1].Elements.ShouldBe("aaa".ToArray());
+            Seq('c', Or(OneOrMany('a'), OneOrMany('b')).WithId(1), OneOrMany('a')).FindMatchesIn("cbbaaa").First().Groups[1].Elements.ShouldBe("bb".ToArray());
 
             // regexp: (A.*?A|A.*A)C
             // pattern: AxxAxxAC
@@ -255,7 +249,7 @@ namespace GenericRegex.Tests
                     Seq('A', OneOrMany(AnyElement), 'A')
                 ),
                 'C'
-            ).WithId(1).Match("AxxAxxAC").CharGroup(1).ShouldBe("AxxAxxAC");
+            ).WithId(1).FindMatchesIn("AxxAxxAC").First().Groups[1].Elements.ShouldBe("AxxAxxAC".ToArray());
 
             Seq(
                 Or(
@@ -263,7 +257,7 @@ namespace GenericRegex.Tests
                     Seq('A', OneOrManyNonGreedy(AnyElement), 'A')
                 ),
                 'C'
-            ).WithId(1).Match("AxxAxxAC").CharGroup(1).ShouldBe("AxxAxxAC");
+            ).WithId(1).FindMatchesIn("AxxAxxAC").First().Groups[1].Elements.ShouldBe("AxxAxxAC".ToArray());
 
             Seq(
                 Or(
@@ -271,21 +265,7 @@ namespace GenericRegex.Tests
                     Seq('A', OneOrManyNonGreedy(AnyElement), 'B')
                 ),
                 'C'
-            ).WithId(1).Match("AxxAxxAC").CharGroup(1).ShouldBeNull();
-        }
-    }
-
-    static class TextExtensions // TODO remove this class
-    {
-        public static string CharGroup(this MatchResult<char> matchResult, int groupId)
-        {
-            Match<char> match = matchResult.Groups[groupId];
-            if (match == null)
-            {
-                return null;
-            }
-
-            return new string(match.Elements.ToArray());
+            ).WithId(1).FindMatchesIn("AxxAxxAC").ShouldBeEmpty();
         }
     }
 }
