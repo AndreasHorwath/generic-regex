@@ -10,22 +10,39 @@ namespace GenericRegex.Console
     {
         public static void Main(string[] args)
         {
-            int i = 0;
-            foreach (var digit in DigitsOfPi().Take(40))
-            {
-                System.Console.WriteLine($"{i:000}: {digit}");
-                i++;
-            }
-
-            System.Console.WriteLine("====================");
+            //int i = 0;
+            //foreach (var digit in DigitsOfPi().Take(40))
+            //{
+            //    System.Console.WriteLine($"{i,6}: {digit}");
+            //    i++;
+            //}
 
             foreach (var match in Seq(6, 6, 6).FindMatchesIn(DigitsOfPi()))
             {
                 System.Console.WriteLine(match.StartIndex);
             }
+
+            //var pattern =
+            //    Seq(
+            //        AnyElement.WithId(0),
+            //        Pred((n, groups) => n == groups[0].Elements[0] + 1).WithId(1),
+            //        Pred((n, groups) => n == groups[1].Elements[0] + 1)
+            //    );
+
+            //foreach (var match in pattern.FindMatchesIn(DigitsOfPi()))
+            //{
+            //    System.Console.WriteLine($"{match.StartIndex}: [{string.Join(", ", match.Elements)}]");
+            //}
         }
 
-        // http://stackoverflow.com/questions/30559175/calculate-nth-pi-digit
+        /// <summary>
+        /// Produces the digits of π as an IEnumerable&lt;int&gt;.
+        /// <para>
+        /// Sources:
+        /// http://stackoverflow.com/questions/11677369/how-to-calculate-pi-to-n-number-of-places-in-c-sharp-using-loops
+        /// and http://www.mathpropress.com/stan/bibliography/spigot.pdf
+        /// </para>
+        /// </summary>
         static public IEnumerable<int> DigitsOfPi()
         {
             int[] x = new int[short.MaxValue];
@@ -59,40 +76,19 @@ namespace GenericRegex.Console
                     prev++;
                 }
                 if (i > 0)
+                {
                     yield return prev;
-                    //result.Add(prev);
+                }
+
                 // store the digit for next time, when it will be the prev value:
                 prev = digit;
 
                 r[x.Length - 1] = x[x.Length - 1] % 10;
                 for (int j = 0; j < x.Length; j++)
+                {
                     x[j] = r[j] * 10;
+                }
             }
-
-            //for (int i = 0; i < short.MaxValue; i++)
-            //{
-            //    uint carry = 0;
-            //    for (int j = 0; j < x.Length; j++)
-            //    {
-            //        uint num = (uint)(x.Length - j - 1);
-            //        uint dem = num * 2 + 1;
-
-            //        x[j] += carry;
-
-            //        uint q = x[j] / dem;
-            //        r[j] = x[j] % dem;
-
-            //        carry = q * num;
-            //    }
-
-            //    yield return (x[x.Length - 1] / 10);
-
-            //    r[x.Length - 1] = x[x.Length - 1] % 10;
-            //    for (int j = 0; j < x.Length; j++)
-            //    {
-            //        x[j] = r[j] * 10;
-            //    }
-            //}
         }
     }
 }

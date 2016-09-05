@@ -11,7 +11,7 @@ namespace GenericRegex
         public int EndIndex => context.Index;
         public int Length => EndIndex - StartIndex;
         public IReadOnlyList<T> Elements { get; }
-        public CapturingGroupContainer<T> Groups { get; }
+        public GroupContainer<T> Groups { get; }
 
         readonly MatchContext<T> context;
 
@@ -20,8 +20,7 @@ namespace GenericRegex
             this.context = context;
             StartIndex = startIndex;
             Elements = context.GetSubsequence(StartIndex, Length).ToList();
-            Groups = new CapturingGroupContainer<T>(context);
+            Groups = new GroupContainer<T>(context);
         }
     }
-
 }

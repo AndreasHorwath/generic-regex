@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace GenericRegex
 {
@@ -43,7 +41,7 @@ namespace GenericRegex
             return new PredExpression<T>(predicate);
         }
 
-        public static ExpressionBase<T> Pred(Func<T, CapturingGroupContainer<T>, bool> predicate)
+        public static ExpressionBase<T> Pred(Func<T, GroupContainer<T>, bool> predicate)
         {
             return new PredWithBackrefsExpressions<T>(predicate);
         }

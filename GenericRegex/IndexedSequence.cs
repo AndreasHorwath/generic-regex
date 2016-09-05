@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace GenericRegex
 {
@@ -13,16 +12,14 @@ namespace GenericRegex
         }
 
         readonly IEnumerator<T> enumerator;
-        readonly List<T> list = new List<T>();
+        readonly List<T> buffer = new List<T>();
         bool isEndOfSequence;
-
-        public IReadOnlyList<T> CurrentList => list;
 
         public bool TryGetElementAt(int index, out T element)
         {
-            if (ReadElementsThroughIndex(index))
+            if (FillBuffer(index + 1))
             {
-                element = list[index];
+                element = buffer[index];
                 return true;
             }
 
@@ -47,14 +44,14 @@ namespace GenericRegex
             }
         }
 
-        bool ReadElementsThroughIndex(int index)
+        bool FillBuffer(int size)
         {
             if (isEndOfSequence)
             {
-                return index < list.Count;
+                return buffer.Count >= size;
             }
 
-            while (list.Count <= index)
+            while (buffer.Count < size)
             {
                 isEndOfSequence = !enumerator.MoveNext();
                 if (isEndOfSequence)
@@ -62,23 +59,10 @@ namespace GenericRegex
                     return false;
                 }
 
-                list.Add(enumerator.Current);
+                buffer.Add(enumerator.Current);
             }
 
             return true;
         }
-
-        //public T this[int index]
-        //{
-        //    get
-        //    {
-        //        if (!ReadElementsThroughIndex(index))
-        //        {
-        //            throw new InvalidOperationException($"IsEndOfSequence: index = {index} > {list.Count}");
-        //        }
-
-        //        return list[index];
-        //    }
-        //}
     }
 }

@@ -64,6 +64,6 @@ namespace GenericRegex
             return InputSequence.GetSubsequence(startIndex, length);
         }
 
-        public override string ToString() => $"Index = {Index}, InputSequence = {string.Join(", ", InputSequence.CurrentList)}";
+        public override string ToString() => $"Index = {Index}, InputSequence = {string.Join(", ", InputSequence.GetSubsequence(0, Index))}";
     }
 }
