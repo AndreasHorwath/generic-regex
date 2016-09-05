@@ -7,31 +7,29 @@ namespace GenericRegex
 {
     public class CapturingGroupContainer<T>
     {
-        readonly Dictionary<int, Match<T>> groups;
+        readonly MatchContext<T> context;
 
         internal CapturingGroupContainer(MatchContext<T> context)
         {
-            groups = context.MatchReferences.ToDictionary(e => e.Key, e =>
-            {
-                MatchReference mr = e.Value;
-                return new Match<T>(mr.StartIndex, mr.Length, context.GetSubsequence(mr.StartIndex, mr.Length));
-            });
+            this.context = context;
         }
 
         public Match<T> this[int expressionId]
         {
             get
             {
-                Match<T> match;
-                groups.TryGetValue(expressionId, out match);
-                return match;
+                MatchReference matchReference;
+                if (context.MatchReferences.TryGetValue(expressionId, out matchReference))
+                {
+                    return new Match<T>(matchReference.StartIndex, matchReference.Length, context.GetSubsequence(matchReference.StartIndex, matchReference.Length));
+                }
+
+                return null;
             }
         }
 
-        public int Count => groups.Count;
+        public int Count => context.MatchReferences.Count;
 
-        public ICollection<int> Keys => groups.Keys;
-
-        public ICollection<Match<T>> Values => groups.Values;
+        public IEnumerable<int> Keys => context.MatchReferences.Keys;
     }
 }

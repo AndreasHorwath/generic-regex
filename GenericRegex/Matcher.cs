@@ -43,6 +43,11 @@ namespace GenericRegex
             return new PredExpression<T>(predicate);
         }
 
+        public static ExpressionBase<T> Pred(Func<T, CapturingGroupContainer<T>, bool> predicate)
+        {
+            return new PredWithBackrefsExpressions<T>(predicate);
+        }
+
         public static ExpressionBase<T> ZeroOrOne(ExpressionBase<T> expression)
         {
             return Repeat(expression, 0, 1);
@@ -58,9 +63,9 @@ namespace GenericRegex
             return Repeat(expression, 1, int.MaxValue);
         }
 
-        public static ExpressionBase<T> Repeat(ExpressionBase<T> expression, int minOccur, int maxOccur = int.MaxValue)
+        public static ExpressionBase<T> Repeat(ExpressionBase<T> expression, int minOccur, int? maxOccur = null)
         {
-            return new RepetitionExpr<T>(expression, minOccur, maxOccur, true);
+            return new RepetitionExpr<T>(expression, minOccur, maxOccur ?? minOccur, true);
         }
 
         public static ExpressionBase<T> ZeroOrOneNonGreedy(ExpressionBase<T> expression)
@@ -78,9 +83,9 @@ namespace GenericRegex
             return RepeatNonGreedy(expression, 1, int.MaxValue);
         }
 
-        public static ExpressionBase<T> RepeatNonGreedy(ExpressionBase<T> expression, int minOccur, int maxOccur = int.MaxValue)
+        public static ExpressionBase<T> RepeatNonGreedy(ExpressionBase<T> expression, int minOccur, int? maxOccur = null)
         {
-            return new RepetitionExpr<T>(expression, minOccur, maxOccur, false);
+            return new RepetitionExpr<T>(expression, minOccur, maxOccur ?? minOccur, false);
         }
 
         public static ExpressionBase<T> StartAnchor
