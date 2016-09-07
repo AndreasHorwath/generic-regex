@@ -46,7 +46,7 @@ Output:
     15372
     ...
 
-Here is an example involving a more complex pattern. It searches within the digits of π for occurrences of three successive ascending integers:
+Here is an example involving a more complex pattern. It searches within the digits of π for 3-tuples of consecutive integers:
 
 ```cs
 var pattern =
