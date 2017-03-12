@@ -1,4 +1,4 @@
-# generic-regex 0.0.1
+# generic-regex
 
 generic-regex is a regular expression engine for .NET. Unlike other such engines, it is not limited to strings but can operate on sequences of any type. For example, you can use it to find subsequences within `IEnumerable<int>` sequences:
 

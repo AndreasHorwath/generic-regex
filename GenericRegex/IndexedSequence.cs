@@ -32,8 +32,7 @@ namespace GenericRegex
             int endIndex = startIndex + length;
             for (int index = startIndex; index < endIndex; index++)
             {
-                T element;
-                if (TryGetElementAt(index, out element))
+                if (TryGetElementAt(index, out T element))
                 {
                     yield return element;
                 }

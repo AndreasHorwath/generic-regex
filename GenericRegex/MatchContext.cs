@@ -40,8 +40,7 @@ namespace GenericRegex
         {
             get
             {
-                T element;
-                return !InputSequence.TryGetElementAt(Index, out element);
+                return !InputSequence.TryGetElementAt(Index, out T element);
             }
         }
 
@@ -49,8 +48,7 @@ namespace GenericRegex
         {
             get
             {
-                T element;
-                if (!InputSequence.TryGetElementAt(Index, out element))
+                if (!InputSequence.TryGetElementAt(Index, out T element))
                 {
                     throw new InvalidOperationException();
                 }

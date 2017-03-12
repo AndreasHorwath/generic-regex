@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GenericRegex", "GenericRegex\GenericRegex.xproj", "{AF01F3DE-E7FC-4E00-BC92-1099A48161A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericRegex", "GenericRegex\GenericRegex.csproj", "{AF01F3DE-E7FC-4E00-BC92-1099A48161A1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GenericRegex.Tests", "GenericRegex.Tests\GenericRegex.Tests.xproj", "{7EB5DB88-7660-4A6E-B045-4C1E89D61269}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericRegex.Tests", "GenericRegex.Tests\GenericRegex.Tests.csproj", "{7EB5DB88-7660-4A6E-B045-4C1E89D61269}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GenericRegex.Console", "GenericRegex.Console\GenericRegex.Console.xproj", "{635942B5-EC5E-4C1D-B257-39708DFFC202}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericRegex.Console", "GenericRegex.Console\GenericRegex.Console.csproj", "{635942B5-EC5E-4C1D-B257-39708DFFC202}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

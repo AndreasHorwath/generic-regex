@@ -18,8 +18,7 @@ namespace GenericRegex
         {
             get
             {
-                MatchReference matchReference;
-                if (context.MatchReferences.TryGetValue(expressionId, out matchReference))
+                if (context.MatchReferences.TryGetValue(expressionId, out MatchReference matchReference))
                 {
                     return new Match<T>(matchReference.StartIndex, matchReference.Length, context.GetSubsequence(matchReference.StartIndex, matchReference.Length));
                 }
