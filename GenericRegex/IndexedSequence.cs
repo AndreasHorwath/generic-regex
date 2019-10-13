@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace GenericRegex
@@ -8,22 +9,24 @@ namespace GenericRegex
     {
         public IndexedSequence(IEnumerable<T> sequence)
         {
-            enumerator = sequence.GetEnumerator();
+            _enumerator = sequence.GetEnumerator();
         }
 
-        readonly IEnumerator<T> enumerator;
-        readonly List<T> buffer = new List<T>();
-        bool isEndOfSequence;
+        readonly IEnumerator<T> _enumerator;
+
+        readonly List<T> _buffer = new List<T>();
+
+        bool _isEndOfSequence;
 
         public bool TryGetElementAt(int index, out T element)
         {
             if (FillBuffer(index + 1))
             {
-                element = buffer[index];
+                element = _buffer[index];
                 return true;
             }
 
-            element = default(T);
+            element = default!; // may be null if T is nullable
             return false;
         }
 
@@ -45,20 +48,20 @@ namespace GenericRegex
 
         bool FillBuffer(int size)
         {
-            if (isEndOfSequence)
+            if (_isEndOfSequence)
             {
-                return buffer.Count >= size;
+                return _buffer.Count >= size;
             }
 
-            while (buffer.Count < size)
+            while (_buffer.Count < size)
             {
-                isEndOfSequence = !enumerator.MoveNext();
-                if (isEndOfSequence)
+                _isEndOfSequence = !_enumerator.MoveNext();
+                if (_isEndOfSequence)
                 {
                     return false;
                 }
 
-                buffer.Add(enumerator.Current);
+                _buffer.Add(_enumerator.Current);
             }
 
             return true;

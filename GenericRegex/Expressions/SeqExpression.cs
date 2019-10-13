@@ -7,14 +7,14 @@ namespace GenericRegex
 {
     class SeqExpression<T> : ExpressionBase<T>
     {
-        readonly List<ExpressionBase<T>> expressions;
-
         public SeqExpression(IEnumerable<ExpressionBase<T>> expressions)
         {
-            this.expressions = expressions.ToList();
+            _expressions = expressions.ToList();
         }
 
-        public IReadOnlyCollection<ExpressionBase<T>> Expressions => expressions;
+        readonly List<ExpressionBase<T>> _expressions;
+
+        public IReadOnlyCollection<ExpressionBase<T>> Expressions => _expressions;
 
         internal override IEnumerable<MatchContext<T>> Match(MatchContext<T> context)
         {
@@ -23,9 +23,9 @@ namespace GenericRegex
 
         IEnumerable<MatchContext<T>> Match(MatchContext<T> context, int position)
         {
-            if (position < expressions.Count)
+            if (position < _expressions.Count)
             {
-                foreach (var newContext in expressions[position].Match(context))
+                foreach (var newContext in _expressions[position].Match(context))
                 {
                     foreach (var resultingContext in Match(newContext, position + 1))
                     {
@@ -39,6 +39,6 @@ namespace GenericRegex
             }
         }
 
-        public override string ToString() => $"Seq({string.Join(", ", expressions)})";
+        public override string ToString() => $"Seq({string.Join(", ", _expressions)})";
     }
 }

@@ -7,12 +7,12 @@ namespace GenericRegex
 {
     class ValExpression<T> : ExpressionBase<T>
     {
-        public T Value { get; }
-
         public ValExpression(T value)
         {
             Value = value;
         }
+
+        public T Value { get; }
 
         internal override IEnumerable<MatchContext<T>> Match(MatchContext<T> context)
         {

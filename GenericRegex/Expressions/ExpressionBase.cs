@@ -8,6 +8,7 @@ namespace GenericRegex
     public abstract class ExpressionBase<T>
     {
         public static implicit operator ExpressionBase<T>(T value) => Matcher<T>.Val(value);
+
         public static implicit operator ExpressionBase<T>(Func<T, bool> predicate) => Matcher<T>.Pred(predicate);
 
         public ExpressionBase<T> WithId(int expressionId)

@@ -8,11 +8,6 @@ namespace GenericRegex
 {
     class MatchContext<T>
     {
-        public int Index { get; }
-        public ImmutableDictionary<int, MatchReference> MatchReferences { get; }
-
-        IndexedSequence<T> InputSequence { get; }
-
         public MatchContext(IndexedSequence<T> inputSequence)
         {
             InputSequence = inputSequence;
@@ -33,14 +28,21 @@ namespace GenericRegex
             MatchReferences = context.MatchReferences.Add(id, matchReference);
         }
 
+        IndexedSequence<T> InputSequence { get; }
+
+        public int Index { get; }
+
+        public ImmutableDictionary<int, MatchReference> MatchReferences { get; }
+
         public MatchContext<T> WithIndex(int index) => new MatchContext<T>(this, index);
+
         public MatchContext<T> WithGroupId(int id, MatchReference matchReference) => new MatchContext<T>(this, id, matchReference);
 
         public bool IsEndOfSequence
         {
             get
             {
-                return !InputSequence.TryGetElementAt(Index, out T element);
+                return !InputSequence.TryGetElementAt(Index, out _);
             }
         }
 

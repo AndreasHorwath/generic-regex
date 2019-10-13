@@ -7,14 +7,15 @@ namespace GenericRegex
 {
     class WithIdExpression<T> : ExpressionBase<T>
     {
-        public ExpressionBase<T> Expression { get; }
-        public int ExpressionId { get; }
-
         public WithIdExpression(ExpressionBase<T> expression, int expressionId)
         {
             Expression = expression;
             ExpressionId = expressionId;
         }
+
+        public ExpressionBase<T> Expression { get; }
+
+        public int ExpressionId { get; }
 
         internal override IEnumerable<MatchContext<T>> Match(MatchContext<T> context)
         {

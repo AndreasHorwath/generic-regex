@@ -20,8 +20,10 @@ namespace GenericRegex.Tests
             result.Length.ShouldBe(2);
             result.Elements.ShouldBe("ab".ToArray());
             result.Groups.Count.ShouldBe(0);
-            result.Groups[0].ShouldBeNull();
-            result.Groups[1].ShouldBeNull();
+            result.Groups.FindMatch(0).ShouldBeNull();
+            result.Groups.FindMatch(1).ShouldBeNull();
+            Assert.Throws<ArgumentException>(() => result.Groups[0]);
+            Assert.Throws<ArgumentException>(() => result.Groups[1]);
         }
 
         [Fact]

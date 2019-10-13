@@ -7,11 +7,6 @@ namespace GenericRegex
 {
     class RepetitionExpr<T> : ExpressionBase<T>
     {
-        public ExpressionBase<T> Expression { get; }
-        public int MinOccur { get; }
-        public int MaxOccur { get; }
-        public bool Greedy { get; private set; }
-
         public RepetitionExpr(ExpressionBase<T> expression, int minOccur, int maxOccur, bool greedy)
         {
             Expression = expression;
@@ -19,6 +14,14 @@ namespace GenericRegex
             MaxOccur = maxOccur;
             Greedy = greedy;
         }
+
+        public ExpressionBase<T> Expression { get; }
+
+        public int MinOccur { get; }
+
+        public int MaxOccur { get; }
+
+        public bool Greedy { get; }
 
         internal override IEnumerable<MatchContext<T>> Match(MatchContext<T> context)
         {

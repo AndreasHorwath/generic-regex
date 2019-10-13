@@ -7,12 +7,12 @@ namespace GenericRegex
 {
     class PredWithBackrefsExpressions<T> : ExpressionBase<T>
     {
-        public Func<T, GroupContainer<T>, bool> Predicate { get; }
-
         public PredWithBackrefsExpressions(Func<T, GroupContainer<T>, bool> predicate)
         {
             Predicate = predicate;
         }
+
+        public Func<T, GroupContainer<T>, bool> Predicate { get; }
 
         internal override IEnumerable<MatchContext<T>> Match(MatchContext<T> context)
         {

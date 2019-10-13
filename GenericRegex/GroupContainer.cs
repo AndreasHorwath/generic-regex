@@ -7,28 +7,28 @@ namespace GenericRegex
 {
     public class GroupContainer<T>
     {
-        readonly MatchContext<T> context;
-
         internal GroupContainer(MatchContext<T> context)
         {
-            this.context = context;
+            _context = context;
         }
+
+        readonly MatchContext<T> _context;
 
         public Match<T> this[int expressionId]
-        {
-            get
-            {
-                if (context.MatchReferences.TryGetValue(expressionId, out MatchReference matchReference))
-                {
-                    return new Match<T>(matchReference.StartIndex, matchReference.Length, context.GetSubsequence(matchReference.StartIndex, matchReference.Length));
-                }
+            => FindMatch(expressionId) ?? throw new ArgumentException($"No match for expressionId = {expressionId}", nameof(expressionId));
 
-                return null;
+        public Match<T>? FindMatch(int expressionId)
+        {
+            if (_context.MatchReferences.TryGetValue(expressionId, out MatchReference matchReference))
+            {
+                return new Match<T>(matchReference.StartIndex, matchReference.Length, _context.GetSubsequence(matchReference.StartIndex, matchReference.Length));
             }
+
+            return null;
         }
 
-        public int Count => context.MatchReferences.Count;
+        public int Count => _context.MatchReferences.Count;
 
-        public IEnumerable<int> Keys => context.MatchReferences.Keys;
+        public IEnumerable<int> Keys => _context.MatchReferences.Keys;
     }
 }

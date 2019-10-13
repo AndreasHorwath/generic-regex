@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 
 namespace GenericRegex
 {
-    struct MatchReference
+    readonly struct MatchReference
     {
-        public int StartIndex { get; }
-        public int Length { get; }
-
         public MatchReference(int startIndex, int length)
         {
             StartIndex = startIndex;
             Length = length;
         }
+
+        public int StartIndex { get; }
+
+        public int Length { get; }
     }
 }
